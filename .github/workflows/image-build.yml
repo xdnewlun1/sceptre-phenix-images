@@ -84,6 +84,13 @@ jobs:
           sudo modprobe nbd
           sudo make ${{ matrix.build }}
 
+      - name: Upload pandapower.qc2 artifact
+        if: matrix.build == 'pandapower'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pandapower.qc2
+          path: pandapower.qc2
+
       # Publish the built image to GitHub Container Registry using oras
       #- name: publish package with oras
         # Only push package if on the default branch (e.g., main)
@@ -130,6 +137,12 @@ jobs:
     needs: tag-images
     runs-on: ubuntu-latest
     steps:
+      # Download pandapower.qc2
+      - name: Download pandapower.qc2 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pandapower.qc2
+          path: .
       # Create a GitHub release with notes and usage instructions
       - name: create release
         uses: ncipollo/release-action@v1.15.0
