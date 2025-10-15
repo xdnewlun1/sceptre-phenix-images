@@ -66,10 +66,10 @@ docker-hello-world:
 
 # Build pandapower.qc2          -- Ubuntu Focal, PandaPower, OTSim
 pandapower:
-        @$(CHECK_IMAGE)
-        @$(PHENIX) image create -r focal -T $(CURDIR)/scripts/atomic/aptly.sh,$(CURDIR)/scripts/pandapower.sh $(COMPRESS) $(@)
-        @$(PHENIX_IMAGE_BUILD) $(@)
-        @$(INJECT_MINICCC)
+	@$(CHECK_IMAGE)
+	@$(PHENIX) image create -r focal -T $(CURDIR)/scripts/atomic/aptly.sh,$(CURDIR)/scripts/pandapower.sh $(COMPRESS) $(@)
+	@$(PHENIX_IMAGE_BUILD) $(@)
+	@$(INJECT_MINICCC)
 
 # Build ntp.qc2			-- Ubuntu Jammy, ntpd
 ntp:
