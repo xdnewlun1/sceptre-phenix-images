@@ -161,3 +161,4 @@ jobs:
           commit: main
           generateReleaseNotes: true
           makeLatest: true
+          artifacts: pandapower.qc2
