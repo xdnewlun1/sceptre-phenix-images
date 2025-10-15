@@ -115,13 +115,13 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
       # Install oras CLI
-      - uses: oras-project/setup-oras@v1
+      #- uses: oras-project/setup-oras@v1
       # Tag images in the registry with 'latest' and date-based tags
-      - name: tag images with date and latest
-        run: |
-          oras version
-          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          oras tag ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7} latest ${{ steps.date.outputs.date }}
+      #- name: tag images with date and latest
+      #  run: |
+      #    oras version
+      #    oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+      #    oras tag ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7} latest ${{ steps.date.outputs.date }}
 
   # Job: Create release successful build
   release:
