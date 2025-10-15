@@ -147,7 +147,7 @@ jobs:
       - name: create release
         uses: ncipollo/release-action@v1.15.0
         with:
-          name: release-${{ needs.tag-images.outputs.date }}
+          name: release-${{ github.run_id }}
           body: |
             Images can be downloaded from the registry using the oras client: https://oras.land/docs/installation
             e.g.:
@@ -155,7 +155,7 @@ jobs:
             oras pull ghcr.io/${{ github.repository }}/bennu.qc2:latest
             ```
             You can view the available image builds from the [Package List](https://github.com/orgs/${{ github.repository_owner }}/packages?repo_name=${{ github.event.repository.name }})
-          tag: release-${{ needs.tag-images.outputs.date }}
+          tag: release-${{ github.run_id }}
           commit: main
           generateReleaseNotes: true
           makeLatest: true
