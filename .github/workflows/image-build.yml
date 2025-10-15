@@ -151,12 +151,8 @@ jobs:
         with:
           name: release-${{ github.run_id }}
           body: |
-            Images can be downloaded from the registry using the oras client: https://oras.land/docs/installation
-            e.g.:
-            ```bash
-            oras pull ghcr.io/${{ github.repository }}/bennu.qc2:latest
-            ```
-            You can view the available image builds from the [Package List](https://github.com/orgs/${{ github.repository_owner }}/packages?repo_name=${{ github.event.repository.name }})
+            All other images should be found in the sandialabs repository this is a fork of.
+            This repository only includes pandapower.qc2
           tag: release-${{ github.run_id }}
           commit: main
           generateReleaseNotes: true
