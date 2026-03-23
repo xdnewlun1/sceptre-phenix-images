@@ -80,7 +80,7 @@ docker-hello-world:
 # Build pandapower.qc2          -- Ubuntu Focal, PandaPower, OTSim
 pandapower:
 	@$(CHECK_IMAGE)
-	@$(PHENIX) image create -r focal -T $(CURDIR)/scripts/atomic/aptly.sh,$(CURDIR)/scripts/pandapower.sh $(COMPRESS) $(@)
+	@$(PHENIX) image create -r focal -T $(CURDIR)/scripts/pandapower.sh $(UBUNTU_MIRROR) $(COMPRESS) $(@)
 	@$(PHENIX_IMAGE_BUILD) $(@)
 	@$(INJECT_MINICCC)
 
