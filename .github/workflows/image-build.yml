@@ -31,7 +31,7 @@ jobs:
             vyos,
             minirouter,
             ubuntu-soaptools,
-            pandapower,
+            pandapower
           ]
     runs-on: ubuntu-latest
     steps:
@@ -97,24 +97,17 @@ jobs:
           export VYOSTMP=/mnt/vyostmp
           sudo -E make ${{ matrix.build }}
 
-      - name: Upload pandapower.qc2 artifact
-        if: matrix.build == 'pandapower'
-        uses: actions/upload-artifact@v4
-        with:
-          name: pandapower.qc2
-          path: pandapower.qc2
-
       # Publish the built image to GitHub Container Registry using oras
-      #- name: publish package with oras
+      - name: publish package with oras
         # Only push package if on the default branch (e.g., main)
         # or if manually triggered on a different branch so maintainers can manually push images
-       # if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) || github.event_name == 'workflow_dispatch'
-       # shell: bash
-       # run: |
-       #   oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-       #   oras push "ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7}" ${{ matrix.build }}.qc2
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          oras push "ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7}" ${{ matrix.build }}.qc2
           # tag with branch name
-      #    oras tag "ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7}" "${GITHUB_REF_SLUG}"
+          oras tag "ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7}" "${GITHUB_REF_SLUG}"
   # Job: Tag images after successful builds
   tag-images:
     strategy:
@@ -132,7 +125,7 @@ jobs:
             vyos,
             minirouter,
             ubuntu-soaptools,
-            pandapower,
+            pandapower
           ]
     # Only run on main branch for scheduled or manual workflow_dispatch events
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
@@ -146,39 +139,34 @@ jobs:
         id: date
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
       # Install oras CLI
-      #- uses: oras-project/setup-oras@v1
+      - uses: oras-project/setup-oras@v1
       # Tag images in the registry with 'latest' and date-based tags
-      #- name: tag images with date and latest
-      #  run: |
-      #    oras version
-      #    oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-      #    oras tag ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7} latest ${{ steps.date.outputs.date }}
+      - name: tag images with date and latest
+        run: |
+          oras version
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          oras tag ghcr.io/${{ github.repository }}/${{ matrix.build }}.qc2:${GITHUB_SHA:0:7} latest ${{ steps.date.outputs.date }}
 
   # Job: Create release successful build
   release:
     # Only run on main branch for scheduled or manual workflow_dispatch events
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
-    needs:
-      - tag-images
-      - build-images
+    needs: tag-images
     runs-on: ubuntu-latest
     steps:
-      # Download pandapower.qc2
-      - name: Download pandapower.qc2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: pandapower.qc2
-          path: .
       # Create a GitHub release with notes and usage instructions
       - name: create release
         uses: ncipollo/release-action@v1.15.0
         with:
-          name: release-${{ github.run_id }}
+          name: release-${{ needs.tag-images.outputs.date }}
           body: |
-            All other images should be found in the sandialabs repository this is a fork of.
-            This repository only includes pandapower.qc2
-          tag: release-${{ github.run_id }}
+            Images can be downloaded from the registry using the oras client: https://oras.land/docs/installation
+            e.g.:
+            ```bash
+            oras pull ghcr.io/${{ github.repository }}/bennu.qc2:latest
+            ```
+            You can view the available image builds from the [Package List](https://github.com/orgs/${{ github.repository_owner }}/packages?repo_name=${{ github.event.repository.name }})
+          tag: release-${{ needs.tag-images.outputs.date }}
           commit: main
           generateReleaseNotes: true
           makeLatest: true
-          artifacts: pandapower.qc2
