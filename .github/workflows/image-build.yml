@@ -64,7 +64,7 @@ jobs:
       - name: start docker containers
         run: |
           sed -i 's/\.\/tmp/\/tmp/g' docker-compose.yml
-          sed -i '/^\s*image: ghcr\.id/d' docker-compose.yml
+          sed -i '/^\s*image: ghcr\.io/d' docker-compose.yml
           sed -i '\|/tmp/phenix|a\      - ${{ github.workspace }}:/${{ github.workspace }}\n    working_dir: ${{ github.workspace }}' docker-compose.yml
           docker compose -f docker-compose.yml up -d phenix
           echo "Waiting for services to start..."
