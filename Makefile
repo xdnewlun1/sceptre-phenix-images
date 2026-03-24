@@ -1,4 +1,4 @@
-.PHONY: help check_clean bookworm kali kali-harmonie jammy noble bennu minirouter _minirouter_img docker-hello-world ntp ubuntu-soaptools clean pandapower
+.PHONY: help check_clean bookworm kali kali-harmonie jammy noble bennu minirouter _minirouter_img docker-hello-world ntp ubuntu-soaptools clean ot-sim
 
 .ONESHELL: # for heredoc and exit
 
@@ -77,10 +77,10 @@ docker-hello-world:
 	@$(PHENIX) image create -T $(CURDIR)/scripts/atomic/docker.sh $(UBUNTU_MIRROR) $(COMPRESS) $(@)
 	@$(PHENIX_IMAGE_BUILD) $(@)
 
-# Build pandapower.qc2          -- Ubuntu Focal, PandaPower, OTSim
-pandapower:
+# Build ot-sim.qc2          -- Ubuntu Focal, OTSim, Pandas, 
+ot-sim:
 	@$(CHECK_IMAGE)
-	@$(PHENIX) image create -r focal -T $(CURDIR)/scripts/pandapower.sh $(UBUNTU_MIRROR) $(COMPRESS) $(@)
+	@$(PHENIX) image create -r focal -T $(CURDIR)/scripts/ot-sim.sh $(UBUNTU_MIRROR) $(COMPRESS) $(@)
 	@$(PHENIX_IMAGE_BUILD) $(@)
 	@$(INJECT_MINICCC)
 
